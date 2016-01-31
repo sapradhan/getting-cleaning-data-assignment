@@ -6,6 +6,7 @@ load_data <- function(dataset, column_labels) {
   y <- read.table(paste0(relpath, dataset, '/', 'y_', dataset, '.txt'), col.names = c('activity'))
   x <- read.table(paste0(relpath, dataset, '/', 'X_', dataset, '.txt'), col.names = column_labels)
   
+  #select only variables that have mean and std in them
   x <- select(x, matches("mean|std")) 
   
   cbind(subject, y, x)
@@ -23,6 +24,7 @@ relpath = 'UCI HAR Dataset/'
 
 # load feature names 
 column_labels <- read.table(paste0(relpath, "features.txt"), stringsAsFactors = FALSE)$V2
+# cleanup columnnames, remove ( )  - and ,  
 column_labels <- tolower(gsub('[()-,]','',column_labels))
 
 # load activity names
@@ -38,7 +40,7 @@ fulldataset <- rbind(train, test)
 # remove intermediate results from memory
 rm("test", "train")
   
-#resolve full names in activity
+#resolve full activity names
 fulldataset <- fulldataset %>% mutate(activity = activity_names[activity,])
   
 #summarize each column
